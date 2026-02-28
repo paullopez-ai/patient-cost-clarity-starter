@@ -1,0 +1,2083 @@
+﻿Request operation ,Query  request ,Input parameters,response 
+"Full eligibility: This operation will provide member info, contact info, insurance info, associatedIds, Planlevel and delegated info.","query CheckEligibility($input: EligibilityInput!) {
+  checkEligibility(input: $input) {
+    eligibility {
+      eligibilityInfo {
+        trnId
+        member {
+          memberId
+          firstName
+          lastName
+          middleName
+          suffix
+          dateOfBirth
+          gender
+          relationshipCode
+          dependentSequenceNumber
+          individualRelationship {
+            code
+            description
+          }
+          relationshipType {
+            code
+            description
+          }
+        }
+        contact {
+          addresses {
+            type
+            street1
+            street2
+            city
+            state
+            country
+            zip
+            zip4
+          }
+        }
+        insuranceInfo {
+          policyNumber
+          eligibilityStartDate
+          eligibilityEndDate
+          planStartDate
+          planEndDate
+          policyStatus
+          planTypeDescription
+          groupName
+          address {
+            type
+            street1
+            street2
+            city
+            state
+            country
+            zip
+            zip4
+          }
+          stateOfIssueCode
+          productType
+          productId
+          productCode
+          payerId
+          lineOfBusinessCode
+          governmentProgramCode
+          coverageType
+          insuranceTypeCode
+          insuranceType
+          paidThroughDate
+          consumerName
+        }
+        associatedIds {
+          alternateId
+          medicaidRecipientId
+          exchangeMemberId
+          alternateSubscriberId
+          hicNumber
+          mbiNumber
+          subscriberMemberFacingIdentifier
+          survivingSpouseId
+          subscriberId
+          memberReplacementId
+          legacyMemberId
+          healthInsuranceExchangeId
+        }
+        planLevels {
+          level
+          family {
+            networkStatus
+            planAmount
+            planAmountFrequency
+            remainingAmount
+          }
+          individual {
+            networkStatus
+            planAmount
+            planAmountFrequency
+            remainingAmount
+          }
+        }
+        delegatedInfo {
+          entity
+          payerId
+          contact {
+            phone
+            fax
+            email
+          }
+          addresses {
+            type
+            street1
+            street2
+            city
+            state
+            country
+            zip
+            zip4
+          }
+        }
+      }
+      primaryCarePhysician {
+        lastName
+        firstName
+        middleName
+        phoneNumber
+        address {
+          type
+          street1
+          street2
+          city
+          state
+          country
+          zip
+          zip4
+        }
+        affiliateHospitalName
+        providerGroupName
+        pcpSpeciality
+        pcpStartDate
+        pcpEndDate
+        providerNPI
+        providerTIN
+        acoNetworkDescription
+        acoNetworkId
+        pcpHistoryList {
+          lastName
+          firstName
+          middleName
+          phoneNumber
+          address {
+            type
+            street1
+            street2
+            city
+            state
+            country
+            zip
+            zip4
+          }
+          affiliateHospitalName
+          providerGroupName
+          pcpSpeciality
+          entityType
+          providerId
+          pcpStartDate
+          pcpEndDate
+          providerNPI
+          providerTIN
+          acoNetworkDescription
+          acoNetworkId
+        }
+      }
+      coordinationOfBenefits {
+        coordinationOfBenefitDetails {
+          member {
+            id
+            name
+          }
+          policy {
+            policyNumber
+            groupNumber
+            coverageType
+            insuranceTypeCode
+            medicareEntitlementType
+            medicareEntitlementReason
+            effectiveDate
+            terminationDate
+            verificationDate
+          }
+          payer {
+            name
+            phoneNumber
+            address {
+              type
+              street1
+              street2
+              city
+              state
+              country
+              zip
+              zip4
+            }
+          }
+          cobPrimacy {
+            indicator
+            description
+            message
+          }
+        }
+        primacyStatus {
+          uhcPolicyNumber
+          policyEffectiveDate
+          policyTerminationDate
+          primacy {
+            indicator
+            description
+            message
+          }
+        }
+        cobUpdateInformation {
+          cobUpdateMessage
+          cobLastVerifiedDate
+        }
+        disclaimer
+      }
+      idCardImages {
+        side
+        content
+        contentType
+      }
+      providerNetwork {
+        status
+        tier
+        speciality
+      }
+      serviceLevels {
+        vendorServices {
+          key
+          vendorName
+          url
+          phone
+          serviceDescription
+          serviceTypeCode
+        }
+        family {
+          networkStatus
+          services {
+            service
+            serviceCode
+            serviceDate
+            status
+            planAmount
+            remainingAmount
+            metYearToDateAmount
+            message {
+              coPay {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  frequency
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                  exactCopay {
+                    coveredStatus
+                    copayDetails {
+                      amount
+                      serviceSetting
+                    }
+                  }
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              coInsurance {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              deductible {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              benefitsAllowed {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              benefitsRemaining {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              coPayList {
+                placeOfService
+                copay
+                service
+                startDate
+                endDate
+                messages
+              }
+              coInsuranceList {
+                placeOfService
+                coinsurancePercent
+                service
+                messages
+                startDate
+                endDate
+              }
+            }
+          }
+        }
+        individual {
+          networkStatus
+          services {
+            service
+            serviceCode
+            serviceDate
+            status
+            planAmount
+            remainingAmount
+            metYearToDateAmount
+            message {
+              coPay {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  frequency
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                  exactCopay {
+                    coveredStatus
+                    copayDetails {
+                      amount
+                      serviceSetting
+                    }
+                  }
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              coInsurance {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              deductible {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              benefitsAllowed {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              benefitsRemaining {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                  messages
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              coPayList {
+                placeOfService
+                copay
+                service
+                startDate
+                endDate
+                messages
+              }
+              coInsuranceList {
+                placeOfService
+                coinsurancePercent
+                service
+                messages
+                startDate
+                endDate
+              }
+            }
+          }
+        }
+      }
+      otherBeneficiaries {
+        memberId
+        firstName
+        lastName
+        middleName
+        suffix
+        dateOfBirth
+        gender
+        relationshipCode
+        dependentSequenceNumber
+        individualRelationship {
+          code
+          description
+        }
+        relationshipType {
+          code
+          description
+        }
+      }
+      additionalInfo {
+        fundingType
+        fundingArrangementDescription
+        businessSegment
+        sizeDefinitionDescription
+        revenueArrangementDescription
+        hsa
+        cdhp
+        cmsHId
+        cmsPackageBenefitPlanCode
+        cmsSegmentId
+        cmsContractId
+        benefitPlanId
+        virtualVisit
+        designatedVirtualClinicNetwork
+        medicaidVariableCode
+        hraBalance
+        hraMessage
+        hraUnavailableMessage
+        graceMessageByState
+        gracePaidThrough
+        gracePeriodMonth
+        medicareGuidelines
+        medicareEntitlementReason
+        medicaidEntitlement {
+          waiverLiabilityList {
+            startDate
+            endDate
+            amount
+            amountFrequency
+            remainingAmount
+            metYtdAmount
+          }
+          patientLiabilityList {
+            startDate
+            endDate
+            amount
+            amountFrequency
+            remainingAmount
+            metYtdAmount
+          }
+          transferOfPropertyPenaltyPeriod {
+            startDate
+            endDate
+          }
+          medicaidVariables {
+            hcfaStatus
+            cobraIndicator
+            spendDownTotal
+            spendDownMet
+            spendDownInd
+            effectiveDate
+            terminationDate
+          }
+        }
+      }
+    }
+  }
+}","{
+	""input"": {
+		""memberId"": ""0001234567"",
+		""firstName"": ""ABC"",
+		""lastName"": ""EFGH"",
+		""groupNumber"": ""123456789"",
+		""dateOfBirth"": ""YYYY-MM-DD"",
+		""serviceEndDate"": ""YYYY-MM-DD"",
+		""serviceStartDate"": ""YYYY-MM-DD"",
+		""payerId"": ""87726"",
+		""trnId"": ""string"",
+		""providerFirstName"": ""QWERT"",
+		""serviceLevelCodes"": [
+			""001""
+		],
+		""providerLastName"": ""XYZ"",
+		""providerNPI"": ""1234567890"",
+		""planStartDate"": ""2023-01-01"",
+		""planEndDate"": ""2023-12-31"",
+		""familyIndicator"": ""Yes""
+	}
+}","{
+    ""data"": {
+        ""checkEligibility"": {
+            ""eligibility"": [
+                {
+                    ""eligibilityInfo"": {
+                        ""trnId"": null,
+                        ""member"": {
+                            ""memberId"": ""840868613"",
+                            ""firstName"": ""Darla"",
+                            ""lastName"": ""Brown"",
+                            ""middleName"": ""J"",
+                            ""suffix"": """",
+                            ""dateOfBirth"": ""1981-06-14"",
+                            ""gender"": ""F"",
+                            ""relationshipCode"": ""000"",
+                            ""dependentSequenceNumber"": ""00"",
+                            ""individualRelationship"": {
+                                ""code"": ""EE"",
+                                ""description"": ""subscriber""
+                            },
+                            ""relationshipType"": {
+                                ""code"": ""18"",
+                                ""description"": ""Self""
+                            }
+                        },
+                        ""contact"": {
+                            ""addresses"": [
+                                {
+                                    ""type"": ""Postal/Mailing"",
+                                    ""street1"": ""addressLine1"",
+                                    ""street2"": """",
+                                    ""city"": ""Hastings"",
+                                    ""state"": ""TX"",
+                                    ""country"": ""US"",
+                                    ""zip"": ""98765"",
+                                    ""zip4"": """"
+                                }
+                            ]
+                        },
+                        ""insuranceInfo"": {
+                            ""policyNumber"": ""0708547"",
+                            ""eligibilityStartDate"": ""2020-01-01"",
+                            ""eligibilityEndDate"": ""2020-12-31"",
+                            ""planStartDate"": ""2020-01-01"",
+                            ""planEndDate"": ""2020-12-31"",
+                            ""policyStatus"": ""Past Policy"",
+                            ""planTypeDescription"": ""Plan Type Description"",
+                            ""groupName"": ""Indiana Acute nursing"",
+                            ""address"": {
+                                ""type"": ""Claim"",
+                                ""street1"": ""addressLine1"",
+                                ""street2"": """",
+                                ""city"": ""Hastings"",
+                                ""state"": ""TX"",
+                                ""country"": ""US"",
+                                ""zip"": ""98765"",
+                                ""zip4"": """"
+                            },
+                            ""stateOfIssueCode"": ""IL"",
+                            ""productType"": ""EPO"",
+                            ""productId"": """",
+                            ""productCode"": ""9"",
+                            ""payerId"": ""87726"",
+                            ""lineOfBusinessCode"": ""E&I"",
+                            ""governmentProgramCode"": ""2"",
+                            ""coverageType"": ""Medical"",
+                            ""insuranceTypeCode"": ""HN"",
+                            ""insuranceType"": ""Health Maintenance Organization (HMO)""
+                        },
+                        ""associatedIds"": {
+                            ""alternateId"": ""840868613"",
+                            ""medicaidRecipientId"": """",
+                            ""exchangeMemberId"": """",
+                            ""alternateSubscriberId"": ""TBD"",
+                            ""hicNumber"": """",
+                            ""mbiNumber"": ""123456"",
+                            ""subscriberMemberFacingIdentifier"": """",
+                            ""survivingSpouseId"": ""TBD"",
+                            ""subscriberId"": ""00313782034"",
+                            ""memberReplacementId"": """",
+                            ""legacyMemberId"": """",
+                            ""healthInsuranceExchangeId"": ""929292""
+                        },
+                        ""planLevels"": [
+                            {
+                                ""level"": ""deductibleInfo/outOfPocketInfo/copayMaxInfo/outOfPocketMaxInfo/deductibleList/outOfPocketList"",
+                                ""family"": [
+                                    {
+                                        ""networkStatus"": ""InNetwork/OutOfNetwork/Tier1/Tier2"",
+                                        ""planAmount"": ""99999.99"",
+                                        ""planAmountFrequency"": ""(Calendar Year)"",
+                                        ""remainingAmount"": ""98999.99""
+                                    }
+                                ],
+                                ""individual"": [
+                                    {
+                                        ""networkStatus"": ""InNetwork/OutOfNetwork/Tier1/Tier2"",
+                                        ""planAmount"": ""1500.0"",
+                                        ""planAmountFrequency"": ""(Calendar Year)"",
+                                        ""remainingAmount"": ""500.0""
+                                    }
+                                ]
+                            }
+                        ],
+                        ""delegatedInfo"": [
+                            {
+                                ""entity"": ""WELLMED MEDICAL MANAGEMENT INC"",
+                                ""payerId"": """",
+                                ""contact"": {
+                                    ""phone"": ""8777574440"",
+                                    ""fax"": """",
+                                    ""email"": """"
+                                },
+                                ""addresses"": [
+                                    {
+                                        ""type"": ""remit"",
+                                        ""street1"": ""addressLine1"",
+                                        ""street2"": """",
+                                        ""city"": ""Hastings"",
+                                        ""state"": ""TX"",
+                                        ""country"": ""US"",
+                                        ""zip"": ""98765"",
+                                        ""zip4"": """"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    ""primaryCarePhysician"": {
+                        ""lastName"": ""Last Name"",
+                        ""firstName"": ""First Name"",
+                        ""middleName"": """",
+                        ""phoneNumber"": ""9999-99-99"",
+                        ""address"": {
+                            ""type"": ""Postal/Mailing/Remit"",
+                            ""street1"": ""1234 CHARDAVE"",
+                            ""street2"": """",
+                            ""city"": ""Hastings"",
+                            ""state"": ""TX"",
+                            ""country"": ""US"",
+                            ""zip"": ""12133"",
+                            ""zip4"": """"
+                        },
+                        ""affiliateHospitalName"": ""DIRECTED BY PRIMARY MD"",
+                        ""providerGroupName"": ""CANOPY HEALTH"",
+                        ""pcpSpeciality"": ""Family Medicine~"",
+                        ""pcpStartDate"": ""2025-07-31"",
+                        ""pcpEndDate"": ""2025-07-31"",
+                        ""providerNPI"": ""9999990886"",
+                        ""providerTIN"": ""99999908"",
+                        ""acoNetworkDescription"": ""ARIZONA"",
+                        ""acoNetworkId"": ""148334""
+                    },
+                    ""coordinationOfBenefits"": [
+                        {
+                            ""coordinationOfBenefitDetails"": null,
+                            ""primacyStatus"": {
+                                ""uhcPolicyNumber"": ""XXXXXXX"",
+                                ""policyEffectiveDate"": ""2024-01-01"",
+                                ""policyTerminationDate"": ""2024-12-31"",
+                                ""primacy"": {
+                                    ""indicator"": ""U"",
+                                    ""description"": ""Unable to determine"",
+                                    ""message"": ""null""
+                                }
+                            },
+                            ""cobUpdateInformation"": {
+                                ""cobUpdateMessage"": ""No Member COB update needed."",
+                                ""cobLastVerifiedDate"": ""9999-12-31""
+                            },
+                            ""disclaimer"": ""When your patient has multiple insurance plans, the Coordination of Benefits (COB) rules decide which plan pays first. The primary plan covers costs and benefits initially, followed by the secondary or even tertiary plans.Below, we list other plans your patient may have that are primary, secondary or tertiary to UnitedHealthcare. Please note, secondary or tertiary coverage can also be provided by UnitedHealthcare under a different product. Please confirm with the member that listed UHC Payer Status is accurate.""
+                        }
+                    ],
+                    ""idCardImages"": [
+                        {
+                            ""side"": ""Front"",
+                            ""content"": ""bytearray"",
+                            ""contentType"": ""image/png""
+                        },
+                        {
+                            ""side"": ""Back"",
+                            ""content"": ""bytearray"",
+                            ""contentType"": ""image/png""
+                        }
+                    ],
+                    ""providerNetwork"": {
+                        ""status"": ""In Network"",
+                        ""tier"": ""1"",
+                        ""speciality"": ""internal Med""
+                    },
+                    ""serviceLevels"": [
+                        {
+                            ""family"": [
+                                {
+                                    ""networkStatus"": ""inNetwork/outOfNetwork/inNetworkTier1/inNetworkTier1PreferredLab/inNetworkTier2/inNetworkDesignatedDiagnosticProvider"",
+                                    ""services"": [
+                                        {
+                                            ""service"": ""chiropractic"",
+                                            ""serviceCode"": ""33"",
+                                            ""serviceDate"": """",
+                                            ""status"": ""Active"",
+                                            ""planAmount"": """",
+                                            ""remainingAmount"": """",
+                                            ""metYearToDateAmount"": """",
+                                            ""message"": {
+                                                ""coPay"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [
+                                                        ""$15 / Visit VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS""
+                                                    ],
+                                                    ""subMessages"": [
+                                                        {
+                                                            ""service"": ""VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS"",
+                                                            ""status"": ""Active"",
+                                                            ""copay"": ""$15"",
+                                                            ""frequency"": null,
+                                                            ""msg"": ""NON-EMERGENCY SERVICES"",
+                                                            ""startDate"": null,
+                                                            ""endDate"": null,
+                                                            ""minCopay"": ""$350"",
+                                                            ""minCopayMsg"": ""AMOUNT VARIES BY LOCATION"",
+                                                            ""maxCopay"": ""$1200"",
+                                                            ""maxCopayMsg"": ""AMOUNT VARIES BY LOCATION"",
+                                                            ""isPrimaryIndicator"": false,
+                                                            ""exactCopay"": null
+                                                        }
+                                                    ],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": false,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""coInsurance"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [
+                                                        ""0% / Visit VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS""
+                                                    ],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": false
+                                                },
+                                                ""deductible"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""benefitsAllowed"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""benefitsRemaining"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""coPayList"": [
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""copay"": ""$0 / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""startDate"": ""01/01/2024"",
+                                                        ""endDate"": ""12/31/2024"",
+                                                        ""messages"": []
+                                                    },
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""copay"": ""$0 / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""startDate"": ""01/01/2024"",
+                                                        ""endDate"": ""12/31/2024"",
+                                                        ""messages"": [
+                                                            ""NON-EMERGENCY SERVICES""
+                                                        ]
+                                                    }
+                                                ],
+                                                ""coInsuranceList"": [
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""coinsurancePercent"": ""40% / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""messages"": [
+                                                            ""NON-EMERGENCY SERVICES""
+                                                        ],
+                                                        ""startDate"": null,
+                                                        ""endDate"": null
+                                                    },
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""coinsurancePercent"": ""40% / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""messages"": [],
+                                                        ""startDate"": null,
+                                                        ""endDate"": null
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            ""individual"": [
+                                {
+                                    ""networkStatus"": ""inNetwork/outOfNetwork/inNetworkTier1/inNetworkTier1PreferredLab/inNetworkTier2/inNetworkDesignatedDiagnosticProvider"",
+                                    ""services"": [
+                                        {
+                                            ""service"": ""chiropractic"",
+                                            ""serviceCode"": ""33"",
+                                            ""serviceDate"": """",
+                                            ""status"": ""Active"",
+                                            ""planAmount"": """",
+                                            ""remainingAmount"": """",
+                                            ""metYearToDateAmount"": """",
+                                            ""message"": {
+                                                ""coPay"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [
+                                                        ""$15 / Visit VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS""
+                                                    ],
+                                                    ""subMessages"": [
+                                                        {
+                                                            ""service"": ""VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS"",
+                                                            ""status"": ""Active"",
+                                                            ""copay"": ""$15"",
+                                                            ""frequency"": null,
+                                                            ""msg"": ""NON-EMERGENCY SERVICES"",
+                                                            ""startDate"": null,
+                                                            ""endDate"": null,
+                                                            ""minCopay"": null,
+                                                            ""minCopayMsg"": null,
+                                                            ""maxCopay"": null,
+                                                            ""maxCopayMsg"": null,
+                                                            ""isPrimaryIndicator"": false,
+                                                            ""exactCopay"": null
+                                                        }
+                                                    ],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": false,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""coInsurance"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [
+                                                        ""0% / Visit VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS""
+                                                    ],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": false
+                                                },
+                                                ""deductible"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""benefitsAllowed"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""benefitsRemaining"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""coPayList"": [
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""copay"": ""$0 / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""startDate"": ""01/01/2024"",
+                                                        ""endDate"": ""12/31/2024"",
+                                                        ""messages"": []
+                                                    },
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""copay"": ""$0 / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""startDate"": ""01/01/2024"",
+                                                        ""endDate"": ""12/31/2024"",
+                                                        ""messages"": [
+                                                            ""NON-EMERGENCY SERVICES""
+                                                        ]
+                                                    }
+                                                ],
+                                                ""coInsuranceList"": [
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""coinsurancePercent"": ""40% / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""messages"": [
+                                                            ""NON-EMERGENCY SERVICES""
+                                                        ],
+                                                        ""startDate"": null,
+                                                        ""endDate"": null
+                                                    },
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""coinsurancePercent"": ""40% / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""messages"": [],
+                                                        ""startDate"": null,
+                                                        ""endDate"": null
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    ""otherBeneficiaries"": [
+                        {
+                            ""memberId"": ""840868613"",
+                            ""firstName"": ""DARLA"",
+                            ""lastName"": ""Brown"",
+                            ""middleName"": ""J"",
+                            ""suffix"": """",
+                            ""dateOfBirth"": ""1981-06-14"",
+                            ""gender"": ""F"",
+                            ""relationshipCode"": ""000"",
+                            ""relationshipType"": {
+                                ""code"": ""18"",
+                                ""description"": ""Self""
+                            },
+                            ""individualRelationship"": {
+                                ""code"": ""EE"",
+                                ""description"": ""subscriber""
+                            },
+                            ""dependentSequenceNumber"": ""00""
+                        }
+                    ],
+                    ""additionalInfo"": {
+                        ""fundingType"": ""Fully Insuredss"",
+                        ""businessSegment"": ""Small Business"",
+                        ""sizeDefinitionDescription"": ""Small Group"",
+                        ""revenueArrangementDescription"": ""Level Funded"",
+                        ""hsa"": ""NO"",
+                        ""cdhp"": ""NO"",
+                        ""cmsHId"": ""H1889"",
+                        ""cmsPackageBenefitPlanCode"": ""025"",
+                        ""cmsSegmentId"": ""000"",
+                        ""cmsContractId"": ""H1889-025-000"",
+                        ""benefitPlanId"": ""47544"",
+                        ""virtualVisit"": ""NO"",
+                        ""designatedVirtualClinicNetwork"": null,
+                        ""medicaidVariableCode"": """",
+                        ""hraBalance"": ""1000"",
+                        ""hraMessage"": ""HRA available"",
+                        ""hraUnavailableMessage"": ""N/A"",
+                        ""graceMessageByState"": ""No grace period"",
+                        ""gracePaidThrough"": ""2025-03-31"",
+                        ""gracePeriodMonth"": ""March"",
+                        ""medicareGuidelines"": false,
+                        ""medicareEntitlementReason"": ""Age"",
+                        ""medicaidEntitlement"": [
+                            {
+                                ""waiverLiabilityList"": [
+                                    {
+                                        ""startDate"": ""2025-07-01"",
+                                        ""endDate"": ""2025-07-31"",
+                                        ""amount"": ""1737.00"",
+                                        ""amountFrequency"": ""Monthly"",
+                                        ""remainingAmount"": ""1737.00"",
+                                        ""metYtdAmount"": null
+                                    }
+                                ],
+                                ""patientLiabilityList"": [
+                                    {
+                                        ""startDate"": ""2025-04-01"",
+                                        ""endDate"": ""2025-04-30"",
+                                        ""amount"": ""1737.00"",
+                                        ""amountFrequency"": ""Monthly"",
+                                        ""remainingAmount"": ""1737.00"",
+                                        ""metYtdAmount"": null
+                                    }
+                                ],
+                                ""transferOfPropertyPenaltyPeriod"": [
+                                    {
+                                        ""startDate"": ""2025-04-01"",
+                                        ""endDate"": ""2025-07-31""
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}"
+"COB :The Coordination of Benefits (COB) search provides information on primacy, including primary and secondary insurance details, as well as coverage specifics for each insurance plan.
+","query CheckEligibility($input: EligibilityInput!) {
+  checkEligibility(input: $input) {
+    eligibility {
+      coordinationOfBenefits {
+        coordinationOfBenefitDetails {
+          member {
+            id
+            name
+          }
+          policy {
+            policyNumber
+            groupNumber
+            coverageType
+            insuranceTypeCode
+            medicareEntitlementType
+            medicareEntitlementReason
+            effectiveDate
+            terminationDate
+            verificationDate
+          }
+          payer {
+            name
+            phoneNumber
+            address {
+              type
+              street1
+              street2
+              city
+              state
+              country
+              zip
+              zip4
+            }
+          }
+          cobPrimacy {
+            indicator
+            description
+            message
+          }
+        }
+        primacyStatus {
+          uhcPolicyNumber
+          policyEffectiveDate
+          policyTerminationDate
+          primacy {
+            indicator
+            description
+            message
+          }
+        }
+        cobUpdateInformation {
+          cobUpdateMessage
+          cobLastVerifiedDate
+        }
+        disclaimer
+      }
+    }
+  }
+}","{
+	""input"": {
+		""memberId"": ""0001234567"",
+		""firstName"": ""ABC"",
+		""lastName"": ""EFGH"",
+		""groupNumber"": ""123456789"",
+		""dateOfBirth"": ""YYYY-MM-DD"",
+		""serviceEndDate"": ""YYYY-MM-DD"",
+		""serviceStartDate"": ""YYYY-MM-DD"",
+		""payerId"": ""87726"",
+		""trnId"": ""string"",
+		""providerFirstName"": ""QWERT"",
+		""serviceLevelCodes"": [
+			""001""
+		],
+		""providerLastName"": ""XYZ"",
+		""providerNPI"": ""1234567890"",
+		""planStartDate"": ""2023-01-01"",
+		""planEndDate"": ""2023-12-31"",
+		""familyIndicator"": ""Yes""
+	}
+}","{
+    ""data"": {
+        ""checkEligibility"": {
+            ""eligibility"": [
+                {
+                    ""coordinationOfBenefits"": [
+                        {
+                            ""coordinationOfBenefitDetails"": null,
+                            ""primacyStatus"": {
+                                ""uhcPolicyNumber"": ""XXXXXXX"",
+                                ""policyEffectiveDate"": ""2024-01-01"",
+                                ""policyTerminationDate"": ""2024-12-31"",
+                                ""primacy"": {
+                                    ""indicator"": ""U"",
+                                    ""description"": ""Unable to determine"",
+                                    ""message"": ""null""
+                                }
+                            },
+                            ""cobUpdateInformation"": {
+                                ""cobUpdateMessage"": ""No Member COB update needed."",
+                                ""cobLastVerifiedDate"": ""9999-12-31""
+                            },
+                            ""disclaimer"": ""When your patient has multiple insurance plans, the Coordination of Benefits (COB) rules decide which plan pays first. The primary plan covers costs and benefits initially, followed by the secondary or even tertiary plans.Below, we list other plans your patient may have that are primary, secondary or tertiary to UnitedHealthcare. Please note, secondary or tertiary coverage can also be provided by UnitedHealthcare under a different product. Please confirm with the member that listed UHC Payer Status is accurate.""
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}"
+"ID card: Front and back images of the ID Card for member and policy requested. 
+","query CheckEligibility($input: EligibilityInput!) {
+  checkEligibility(input: $input) {
+       eligibility {
+      idCardImages {
+        side
+        content
+        contentType
+      }
+ 
+    }
+  }
+}","{
+	""input"": {
+		""memberId"": ""0001234567"",
+		""firstName"": ""ABC"",
+		""lastName"": ""EFGH"",
+		""groupNumber"": ""123456789"",
+		""dateOfBirth"": ""YYYY-MM-DD"",
+		""serviceEndDate"": ""YYYY-MM-DD"",
+		""serviceStartDate"": ""YYYY-MM-DD"",
+		""payerId"": ""87726"",
+		""trnId"": ""string"",
+		""providerFirstName"": ""QWERT"",
+		""serviceLevelCodes"": [
+			""001""
+		],
+		""providerLastName"": ""XYZ"",
+		""providerNPI"": ""1234567890"",
+		""planStartDate"": ""2023-01-01"",
+		""planEndDate"": ""2023-12-31"",
+		""familyIndicator"": ""Yes""
+	}
+}","{
+    ""data"": {
+        ""checkEligibility"": {
+            ""eligibility"": [
+                {
+                    ""idCardImages"": [
+                        {
+                            ""side"": ""Front"",
+                            ""content"": ""bytearray"",
+                            ""contentType"": ""image/png""
+                        },
+                        {
+                            ""side"": ""Back"",
+                            ""content"": ""bytearray"",
+                            ""contentType"": ""image/png""
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}"
+Network status ,"query CheckEligibility($input: EligibilityInput!) {
+  checkEligibility(input: $input) {
+    eligibility {
+      providerNetwork {
+        status
+        tier
+        speciality
+      }
+    }
+  }
+}","{
+	""input"": {
+		""memberId"": ""0001234567"",
+		""firstName"": ""ABC"",
+		""lastName"": ""EFGH"",
+		""groupNumber"": ""123456789"",
+		""dateOfBirth"": ""YYYY-MM-DD"",
+		""serviceEndDate"": ""YYYY-MM-DD"",
+		""serviceStartDate"": ""YYYY-MM-DD"",
+		""payerId"": ""87726"",
+		""trnId"": ""string"",
+		""providerFirstName"": ""QWERT"",
+		""serviceLevelCodes"": [
+			""001""
+		],
+		""providerLastName"": ""XYZ"",
+		""providerNPI"": ""1234567890"",
+		""planStartDate"": ""2023-01-01"",
+		""planEndDate"": ""2023-12-31"",
+		""familyIndicator"": ""Yes""
+	}
+}","{
+  ""data"": {
+    ""checkEligibility"": {
+      ""eligibility"": [
+        {
+          ""providerNetwork"": {
+            ""status"": ""In Network"",
+            ""tier"": ""1"",
+            ""speciality"": ""internal Med""
+          }
+        }
+      ]
+    }
+  }
+}"
+"Copay Coinsurance
+","query CheckEligibility($input: EligibilityInput!) {
+  checkEligibility(input: $input) {
+    eligibility {
+      serviceLevels {
+        family {
+          networkStatus
+          services {
+            service
+            serviceCode
+            serviceDate
+            status
+            planAmount
+            remainingAmount
+            metYearToDateAmount
+            message {
+              coPay {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  frequency
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                  exactCopay {
+                    coveredStatus
+                    copayDetails {
+                      amount
+                      serviceSetting
+                    }
+                  }
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              coInsurance {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              deductible {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              benefitsAllowed {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              benefitsRemaining {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              coPayList {
+                placeOfService
+                copay
+                service
+                startDate
+                endDate
+                messages
+              }
+              coInsuranceList {
+                placeOfService
+                coinsurancePercent
+                service
+                messages
+                startDate
+                endDate
+              }
+            }
+          }
+        }
+        individual {
+          networkStatus
+          services {
+            service
+            serviceCode
+            serviceDate
+            status
+            planAmount
+            remainingAmount
+            metYearToDateAmount
+            message {
+              coPay {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  frequency
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                  exactCopay {
+                    coveredStatus
+                    copayDetails {
+                      amount
+                      serviceSetting
+                    }
+                  }
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              coInsurance {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              deductible {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              benefitsAllowed {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              benefitsRemaining {
+                isSingleMessageDetail
+                isViewDetail
+                messages
+                subMessages {
+                  service
+                  status
+                  copay
+                  msg
+                  startDate
+                  endDate
+                  minCopay
+                  minCopayMsg
+                  maxCopay
+                  maxCopayMsg
+                  isPrimaryIndicator
+                }
+                limitationInfo {
+                  lmtPeriod
+                  lmtType
+                  lmtOccurPerPeriod
+                  lmtDollarPerPeriod
+                  message
+                }
+                isMultipleCopaysFound
+                isMultipleCoinsuranceFound
+              }
+              coPayList {
+                placeOfService
+                copay
+                service
+                startDate
+                endDate
+                messages
+              }
+              coInsuranceList {
+                placeOfService
+                coinsurancePercent
+                service
+                messages
+                startDate
+                endDate
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}","{
+	""input"": {
+		""memberId"": ""0001234567"",
+		""firstName"": ""ABC"",
+		""lastName"": ""EFGH"",
+		""groupNumber"": ""123456789"",
+		""dateOfBirth"": ""YYYY-MM-DD"",
+		""serviceEndDate"": ""YYYY-MM-DD"",
+		""serviceStartDate"": ""YYYY-MM-DD"",
+		""payerId"": ""87726"",
+		""trnId"": ""string"",
+		""providerFirstName"": ""QWERT"",
+		""serviceLevelCodes"": [
+			""001""
+		],
+		""providerLastName"": ""XYZ"",
+		""providerNPI"": ""1234567890"",
+		""planStartDate"": ""2023-01-01"",
+		""planEndDate"": ""2023-12-31"",
+		""familyIndicator"": ""Yes""
+	}
+}","{
+    ""data"": {
+        ""checkEligibility"": {
+            ""eligibility"": [
+                {
+                    ""serviceLevels"": [
+                        {
+                            ""family"": [
+                                {
+                                    ""networkStatus"": ""inNetwork/outOfNetwork/inNetworkTier1/inNetworkTier1PreferredLab/inNetworkTier2/inNetworkDesignatedDiagnosticProvider"",
+                                    ""services"": [
+                                        {
+                                            ""service"": ""chiropractic"",
+                                            ""serviceCode"": ""33"",
+                                            ""serviceDate"": """",
+                                            ""status"": ""Active"",
+                                            ""planAmount"": """",
+                                            ""remainingAmount"": """",
+                                            ""metYearToDateAmount"": """",
+                                            ""message"": {
+                                                ""coPay"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [
+                                                        ""$15 / Visit VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS""
+                                                    ],
+                                                    ""subMessages"": [
+                                                        {
+                                                            ""service"": ""VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS"",
+                                                            ""status"": ""Active"",
+                                                            ""copay"": ""$15"",
+                                                            ""frequency"": null,
+                                                            ""msg"": ""NON-EMERGENCY SERVICES"",
+                                                            ""startDate"": null,
+                                                            ""endDate"": null,
+                                                            ""minCopay"": ""$350"",
+                                                            ""minCopayMsg"": ""AMOUNT VARIES BY LOCATION"",
+                                                            ""maxCopay"": ""$1200"",
+                                                            ""maxCopayMsg"": ""AMOUNT VARIES BY LOCATION"",
+                                                            ""isPrimaryIndicator"": false,
+                                                            ""exactCopay"": null
+                                                        }
+                                                    ],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": false,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""coInsurance"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [
+                                                        ""0% / Visit VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS""
+                                                    ],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": false
+                                                },
+                                                ""deductible"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""benefitsAllowed"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""benefitsRemaining"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""coPayList"": [
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""copay"": ""$0 / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""startDate"": ""01/01/2024"",
+                                                        ""endDate"": ""12/31/2024"",
+                                                        ""messages"": []
+                                                    },
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""copay"": ""$0 / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""startDate"": ""01/01/2024"",
+                                                        ""endDate"": ""12/31/2024"",
+                                                        ""messages"": [
+                                                            ""NON-EMERGENCY SERVICES""
+                                                        ]
+                                                    }
+                                                ],
+                                                ""coInsuranceList"": [
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""coinsurancePercent"": ""40% / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""messages"": [
+                                                            ""NON-EMERGENCY SERVICES""
+                                                        ],
+                                                        ""startDate"": null,
+                                                        ""endDate"": null
+                                                    },
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""coinsurancePercent"": ""40% / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""messages"": [],
+                                                        ""startDate"": null,
+                                                        ""endDate"": null
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            ""individual"": [
+                                {
+                                    ""networkStatus"": ""inNetwork/outOfNetwork/inNetworkTier1/inNetworkTier1PreferredLab/inNetworkTier2/inNetworkDesignatedDiagnosticProvider"",
+                                    ""services"": [
+                                        {
+                                            ""service"": ""chiropractic"",
+                                            ""serviceCode"": ""33"",
+                                            ""serviceDate"": """",
+                                            ""status"": ""Active"",
+                                            ""planAmount"": """",
+                                            ""remainingAmount"": """",
+                                            ""metYearToDateAmount"": """",
+                                            ""message"": {
+                                                ""coPay"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [
+                                                        ""$15 / Visit VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS""
+                                                    ],
+                                                    ""subMessages"": [
+                                                        {
+                                                            ""service"": ""VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS"",
+                                                            ""status"": ""Active"",
+                                                            ""copay"": ""$15"",
+                                                            ""frequency"": null,
+                                                            ""msg"": ""NON-EMERGENCY SERVICES"",
+                                                            ""startDate"": null,
+                                                            ""endDate"": null,
+                                                            ""minCopay"": null,
+                                                            ""minCopayMsg"": null,
+                                                            ""maxCopay"": null,
+                                                            ""maxCopayMsg"": null,
+                                                            ""isPrimaryIndicator"": false,
+                                                            ""exactCopay"": null
+                                                        }
+                                                    ],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": false,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""coInsurance"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [
+                                                        ""0% / Visit VARIED BENEFIT.REFER TO PLAN EVIDENCE OF COVERAGE FOR BENEFITS AND LIMITATIONS""
+                                                    ],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": false
+                                                },
+                                                ""deductible"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""benefitsAllowed"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""benefitsRemaining"": {
+                                                    ""isSingleMessageDetail"": false,
+                                                    ""isViewDetail"": false,
+                                                    ""messages"": [],
+                                                    ""subMessages"": [],
+                                                    ""limitationInfo"": [],
+                                                    ""isMultipleCopaysFound"": null,
+                                                    ""isMultipleCoinsuranceFound"": null
+                                                },
+                                                ""coPayList"": [
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""copay"": ""$0 / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""startDate"": ""01/01/2024"",
+                                                        ""endDate"": ""12/31/2024"",
+                                                        ""messages"": []
+                                                    },
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""copay"": ""$0 / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""startDate"": ""01/01/2024"",
+                                                        ""endDate"": ""12/31/2024"",
+                                                        ""messages"": [
+                                                            ""NON-EMERGENCY SERVICES""
+                                                        ]
+                                                    }
+                                                ],
+                                                ""coInsuranceList"": [
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""coinsurancePercent"": ""40% / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""messages"": [
+                                                            ""NON-EMERGENCY SERVICES""
+                                                        ],
+                                                        ""startDate"": null,
+                                                        ""endDate"": null
+                                                    },
+                                                    {
+                                                        ""placeOfService"": ""Outpatient Hospital (on-campus)"",
+                                                        ""coinsurancePercent"": ""40% / Visit"",
+                                                        ""service"": ""emergencyServices"",
+                                                        ""messages"": [],
+                                                        ""startDate"": null,
+                                                        ""endDate"": null
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"
