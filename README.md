@@ -315,6 +315,10 @@ The sandbox returns the eligibility response structure but with minimal benefit 
 
 Unrecognized member IDs return a GraphQL error with code `NUHC_ELIG_NO_RESP`. The app handles this gracefully with an error message.
 
+### GraphQL Schema Fix — `LimitationInfo.message` Removed
+
+The Optum sandbox schema no longer includes a singular `message` field on the `LimitationInfo` type. Requesting it causes a `400 Bad Request` with `FieldUndefined` validation errors. The plural `messages` field remains valid and is used instead. This fix was applied to `lib/optum-eligibility.ts` and `graph-query.csv`.
+
 ---
 
 ## Claude AI Integration

@@ -204,7 +204,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
@@ -232,7 +231,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
@@ -260,7 +258,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
@@ -288,7 +285,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
@@ -316,7 +312,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
@@ -382,7 +377,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
@@ -410,7 +404,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
@@ -438,7 +431,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
@@ -466,7 +458,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
@@ -494,7 +485,6 @@ query CheckEligibility($input: EligibilityInput!) {
                   lmtType
                   lmtOccurPerPeriod
                   lmtDollarPerPeriod
-                  message
                   messages
                 }
                 isMultipleCopaysFound
