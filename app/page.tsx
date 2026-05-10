@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import type { SyntheticPatient, ProcedureContext } from "@/types/patient.types"
 import type { CostEstimateResult, TimingData } from "@/types/claude.types"
 import type { EligibilityResponse, BenefitCheckResponse } from "@/types/optum.types"
@@ -68,14 +69,42 @@ type AppState =
     }
 
 export default function HomePage() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const [state, setState] = React.useState<AppState>({ status: "idle" })
   const [selectedPatient, setSelectedPatient] = React.useState<SyntheticPatient | null>(null)
   const [selectedProcedure, setSelectedProcedure] = React.useState<ProcedureContext | null>(null)
   const [sandboxNarrative, setSandboxNarrative] = React.useState<SandboxNarrative | null>(null)
-  const [mode, setMode] = React.useState<AppMode>(getInitialMode)
+  const [mode, setMode] = React.useState<AppMode>(() => {
+    const urlMode = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("mode") : null
+    if (urlMode === "sandbox") return "sandbox"
+    return getInitialMode()
+  })
 
   const isMock = mode === "mock"
   const isSandbox = mode === "sandbox"
+
+  // Strip ?mode param from URL after it has been consumed on mount
+  React.useEffect(() => {
+    if (searchParams.get("mode")) {
+      router.replace("/", { scroll: false })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleModeChange = async (newMode: AppMode) => {
+    if (newMode === "sandbox") {
+      const res = await fetch("/api/auth/check")
+      if (!res.ok) {
+        window.location.href = "/login?from=" + encodeURIComponent("/?mode=sandbox")
+        return
+      }
+    }
+    setMode(newMode)
+    setState({ status: "idle" })
+    setSelectedPatient(null)
+    setSelectedProcedure(null)
+    setSandboxNarrative(null)
+  }
 
   const handlePatientSelect = React.useCallback((patient: SyntheticPatient) => {
     setSelectedPatient(patient)
@@ -194,7 +223,7 @@ export default function HomePage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <ModeToggle mode={mode} onModeChange={setMode} />
+            <ModeToggle mode={mode} onModeChange={handleModeChange} />
             <ThemeToggle />
             {!isMock && (
               <Button
