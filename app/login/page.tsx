@@ -1,34 +1,28 @@
 'use client'
 
-import { useState, FormEvent, Suspense } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card } from '@/components/ui/card'
-
-export default function LoginPage() {
-  return (
-    <Suspense>
-      <LoginForm />
-    </Suspense>
-  )
-}
+import { AlertCircleIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [error, setError] = useState('')
+  const from = searchParams.get('from') ?? '/'
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setError('')
+    setError(null)
     setLoading(true)
-
-    const form = e.currentTarget
-    const username = (form.elements.namedItem('username') as HTMLInputElement).value
-    const password = (form.elements.namedItem('password') as HTMLInputElement).value
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -37,13 +31,14 @@ function LoginForm() {
         body: JSON.stringify({ username, password }),
       })
 
-      if (res.ok) {
-        const from = searchParams.get('from') ?? '/'
-        router.push(from)
-      } else {
-        const data = await res.json().catch(() => ({}))
-        setError(data.error ?? 'Invalid credentials')
+      if (!res.ok) {
+        const data = (await res.json()) as { error: string }
+        setError(data.error ?? 'Login failed')
+        return
       }
+
+      router.push(from)
+      router.refresh()
     } catch {
       setError('Network error. Please try again.')
     } finally {
@@ -52,40 +47,76 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-muted/20">
-      <Card className="w-full max-w-sm p-8 shadow-xl">
-        <h1 className="mb-6 font-display text-2xl font-bold text-center">Sign In</h1>
+    <Card>
+      <CardHeader className="pb-4">
+        <h2 className="text-lg font-semibold text-center">Sign In</h2>
+      </CardHeader>
+      <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1.5">
+          {error && (
+            <div className="flex items-center gap-2 p-3 text-sm bg-destructive/10 text-destructive border border-destructive/20">
+              <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4 shrink-0" />
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-2">
             <Label htmlFor="username">Username</Label>
             <Input
               id="username"
-              name="username"
-              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
               autoComplete="username"
               required
-              disabled={loading}
             />
           </div>
-          <div className="space-y-1.5">
+
+          <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
-              name="password"
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
               autoComplete="current-password"
               required
-              disabled={loading}
             />
           </div>
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
-          <Button type="submit" className="w-full" disabled={loading}>
+
+          <Button
+            type="submit"
+            className="w-full bg-brand hover:bg-brand/90 text-brand-foreground"
+            disabled={loading}
+          >
             {loading ? 'Signing in...' : 'Sign In'}
           </Button>
         </form>
-      </Card>
-    </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <main className="min-h-screen flex items-center justify-center p-4 bg-background">
+      <div className="w-full max-w-md space-y-6">
+        <div className="text-center space-y-2">
+          <h1 className="font-display text-4xl font-bold">Patient Cost Clarity</h1>
+          <p className="text-muted-foreground">
+            Real-time patient cost estimates powered by Optum &amp; Claude AI
+          </p>
+        </div>
+
+        <Suspense fallback={<div className="text-center text-muted-foreground text-sm">Loading...</div>}>
+          <LoginForm />
+        </Suspense>
+
+        <p className="text-center text-xs text-muted-foreground">
+          Credentials set via <span className="font-mono">AUTH_USERNAME</span> / <span className="font-mono">AUTH_PASSWORD_HASH</span> env vars
+        </p>
+      </div>
+    </main>
   )
 }
