@@ -68,7 +68,7 @@ type AppState =
       timing: TimingData
     }
 
-export default function HomePage() {
+function HomePageInner() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [state, setState] = React.useState<AppState>({ status: "idle" })
@@ -309,5 +309,13 @@ export default function HomePage() {
 
       <SandboxDisclosure mode={mode} />
     </div>
+  )
+}
+
+export default function HomePage() {
+  return (
+    <React.Suspense>
+      <HomePageInner />
+    </React.Suspense>
   )
 }
