@@ -114,7 +114,7 @@ export default function LoginPage() {
         </Suspense>
 
         <p className="text-center text-xs text-muted-foreground">
-          Credentials set via <span className="font-mono">AUTH_USERNAME</span> / <span className="font-mono">AUTH_PASSWORD_HASH</span> env vars
+          Default credentials: <span className="font-mono">admin</span> / <span className="font-mono">your_password</span> — change before hosting
         </p>
       </div>
     </main>
