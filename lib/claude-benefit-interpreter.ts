@@ -1,3 +1,9 @@
+// SUPERSEDED: This module is retained for documentation and Vercel fallback.
+// The primary AI interpretation path is now the Python Semantic Kernel backend
+// (backend/app/agents/cost_agent.py) using Azure OpenAI GPT-5.4.
+// When BACKEND_URL + NEXT_PUBLIC_FORCE_BACKEND are set, the route handler
+// in app/api/optum/cost-estimate/route.ts proxies to the backend instead.
+
 import { APP_MODE, type AppMode } from './config'
 import type { ClaudeCostAnnotation } from '@/types/claude.types'
 import type { EligibilityResponse, BenefitCheckResponse } from '@/types/optum.types'

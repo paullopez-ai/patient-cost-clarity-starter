@@ -1,0 +1,90 @@
+%% ============================================================
+%% DIAGRAM 3: Bicep Infrastructure — Resource Dependencies
+%% ============================================================
+
+---
+title: Azure Bicep Deployment — Resource Dependencies
+---
+
+flowchart TB
+    DEPLOY["az deployment group create<br/><i>infrastructure/main.bicep</i>"]
+
+    DEPLOY --> MON & OAI & SEARCH & KV & ACR
+
+    subgraph PARALLEL["Deploy in Parallel (no dependencies)"]
+        direction LR
+        MON["monitoring.bicep<br/><b>Log Analytics Workspace</b><br/><b>Application Insights</b><br/><i>PerGB2018, 30-day retention</i>"]
+        OAI["openai.bicep<br/><b>Azure OpenAI Account</b><br/><i>S0 tier</i><br/>GPT-5.4 deployment<br/>text-embedding-3-large"]
+        SEARCH["search.bicep<br/><b>Azure AI Search</b><br/><i>Basic tier, 1 replica</i>"]
+        KV["key-vault.bicep<br/><b>Azure Key Vault</b><br/><i>RBAC auth, soft delete</i>"]
+        ACR["registry.bicep<br/><b>Container Registry</b><br/><i>Basic tier, admin enabled</i>"]
+    end
+
+    MON & OAI & SEARCH & KV & ACR --> APPS
+
+    subgraph APPS["container-apps.bicep (depends on all above)"]
+        direction TB
+
+        ENV["Container Apps Environment<br/><i>Connected to Log Analytics</i>"]
+
+        subgraph FE_APP["Frontend Container App"]
+            direction TB
+            FE_ID["System-Assigned<br/>Managed Identity"]
+            FE_INGRESS["External Ingress<br/>port 3000"]
+            FE_ENV["Env Vars:<br/>BACKEND_URL<br/>AZURE_KEY_VAULT_URI"]
+        end
+
+        subgraph BE_APP["Backend Container App"]
+            direction TB
+            BE_ID["System-Assigned<br/>Managed Identity"]
+            BE_INGRESS["Internal Ingress<br/>port 8000"]
+            BE_ENV["Env Vars:<br/>AZURE_OPENAI_ENDPOINT<br/>AZURE_SEARCH_ENDPOINT<br/>AZURE_KEY_VAULT_URI"]
+        end
+
+        ENV --- FE_APP
+        ENV --- BE_APP
+
+        subgraph ROLES["Managed Identity Role Assignments"]
+            direction TB
+            R1["Backend: Cognitive Services<br/>OpenAI User<br/><i>on Azure OpenAI resource</i>"]
+            R2["Backend: Search Index<br/>Data Reader<br/><i>on AI Search resource</i>"]
+            R3["Backend: Key Vault<br/>Secrets User<br/><i>on Key Vault</i>"]
+            R4["Frontend: Key Vault<br/>Secrets User<br/><i>on Key Vault</i>"]
+        end
+    end
+
+    %% Role assignment targets
+    R1 -. "scoped to" .-> OAI
+    R2 -. "scoped to" .-> SEARCH
+    R3 -. "scoped to" .-> KV
+    R4 -. "scoped to" .-> KV
+
+    %% Image pull
+    ACR -. "Image pull:<br/>frontend:latest<br/>backend:latest" .-> ENV
+
+    %% Outputs
+    APPS --> OUT
+
+    subgraph OUT["Deployment Outputs"]
+        direction LR
+        O1["frontendUrl"]
+        O2["backendUrl"]
+        O3["openAiEndpoint"]
+        O4["searchEndpoint"]
+        O5["keyVaultUri"]
+        O6["acrLoginServer"]
+        O7["appInsightsConnectionString"]
+    end
+
+    %% Styling
+    classDef deploy fill:#ebf8ff,stroke:#3182ce,stroke-width:2px,color:#1a365d
+    classDef module fill:#f0fff4,stroke:#38a169,stroke-width:2px,color:#22543d
+    classDef apps fill:#faf5ff,stroke:#805ad5,stroke-width:2px,color:#322659
+    classDef role fill:#fefcbf,stroke:#d69e2e,stroke-width:1px,color:#744210
+    classDef output fill:#fff5f5,stroke:#e53e3e,stroke-width:1px,color:#742a2a
+
+    class DEPLOY deploy
+    class MON,OAI,SEARCH,KV,ACR module
+    class FE_APP,BE_APP,ENV apps
+    class R1,R2,R3,R4 role
+    class O1,O2,O3,O4,O5,O6,O7 output

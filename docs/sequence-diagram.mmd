@@ -1,0 +1,97 @@
+%% ============================================================
+%% DIAGRAM 2: Request Sequence — Single Patient Cost Estimate
+%% ============================================================
+
+---
+title: Patient Cost Estimate — Request Flow
+---
+
+sequenceDiagram
+    actor User as Browser
+    participant FE as Next.js Frontend<br/>(Container App)
+    participant Optum as Optum API<br/>(External)
+    participant BE as FastAPI Backend<br/>(Container App)
+    participant SK as Semantic Kernel<br/>(5 Plugins)
+    participant GPT as Azure OpenAI<br/>GPT-5.4
+    participant EMB as Azure OpenAI<br/>Embeddings
+    participant RAG as Azure AI Search
+    participant AI as Application<br/>Insights
+
+    User->>FE: POST /api/optum/cost-estimate<br/>{patientId, mode}
+
+    Note over FE: Step 1 — Optum OAuth
+    FE->>Optum: POST OAuth token request<br/>(client credentials)
+    Optum-->>FE: Bearer token (cached 1hr)
+
+    Note over FE: Step 2 — Eligibility Query
+    FE->>Optum: POST GraphQL CheckEligibility<br/>{memberId, payerId, npi}
+    Optum-->>FE: EligibilityResponse<br/>(coverage, plan, benefits)
+
+    Note over FE: Step 2b — Benefit Derivation
+    FE->>FE: deriveBenefitCheck()<br/>(local extraction, no API call)
+
+    Note over FE: Step 3 — Proxy to Backend
+    FE->>BE: POST /api/interpret<br/>{patient, procedure, eligibility, benefitCheck}
+
+    Note over BE,AI: Semantic Kernel Pipeline Begins
+
+    rect rgb(233, 216, 253)
+        Note over SK: Plugin 1: EligibilityPlugin
+        BE->>SK: interpret_eligibility(eligibility)
+        SK->>GPT: Chat completion
+        GPT-->>SK: Eligibility summary
+        SK-->>BE: eligibility_summary
+        BE--)AI: sk_plugin_interpret_eligibility<br/>{latency_ms, tokens}
+    end
+
+    rect rgb(224, 231, 255)
+        Note over SK: Plugin 2: BenefitPlugin
+        BE->>SK: structure_benefit_data(eligibility, benefitCheck)
+        SK->>GPT: Chat completion
+        GPT-->>SK: Benefit summary
+        SK-->>BE: benefit_summary
+        BE--)AI: sk_plugin_structure_benefit_data<br/>{latency_ms, tokens}
+    end
+
+    rect rgb(198, 246, 213)
+        Note over SK,RAG: Plugin 3: CostPlugin (RAG-enabled)
+        BE->>SK: calculate_cost_estimate(benefits, patient, procedure)
+
+        SK->>EMB: Generate query embedding<br/>(procedure code + benefit scenario)
+        EMB-->>SK: 3072-dim vector
+
+        SK->>RAG: Hybrid search<br/>(vector + BM25 on procedure code)
+        RAG-->>SK: Top 3 guideline chunks<br/>(CPT rules, calc rules, coverage)
+
+        Note over SK: Inject retrieved docs into prompt
+        SK->>GPT: Chat completion<br/>(with RAG grounding context)
+        GPT-->>SK: Cost estimate JSON<br/>{estimatedTotal, breakdown[], confidence}
+        SK-->>BE: cost_result
+        BE--)AI: sk_plugin_calculate_cost_estimate<br/>{latency_ms, tokens, retrieved_documents}
+    end
+
+    rect rgb(254, 235, 200)
+        Note over SK: Plugin 4: ScriptPlugin
+        BE->>SK: generate_patient_script(cost_summary, name)
+        SK->>GPT: Chat completion
+        GPT-->>SK: Patient-facing script (2-4 sentences)
+        SK-->>BE: patient_script
+        BE--)AI: sk_plugin_generate_patient_script<br/>{latency_ms, tokens}
+    end
+
+    rect rgb(255, 218, 218)
+        Note over SK: Plugin 5: RiskPlugin
+        BE->>SK: assess_risk_flags(cost_summary, benefits)
+        SK->>GPT: Chat completion
+        GPT-->>SK: Risk assessment JSON<br/>{riskFlag, actionItems[], authRequired}
+        SK-->>BE: risk_result
+        BE--)AI: sk_plugin_assess_risk_flags<br/>{latency_ms, tokens}
+    end
+
+    Note over BE: Assemble ClaudeCostAnnotation
+
+    BE-->>FE: ClaudeCostAnnotation JSON<br/>{patientOwes, breakdown, script,<br/>actionItems, riskFlag}
+
+    FE-->>User: Full result<br/>{eligibility, benefitCheck,<br/>costEstimate, timing}
+
+    Note over User: Dashboard renders:<br/>Cost Hero, Breakdown Chart,<br/>Patient Script, Action Items,<br/>Risk Badge

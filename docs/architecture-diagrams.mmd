@@ -1,0 +1,141 @@
+%% ============================================================
+%% DIAGRAM 1: Full Azure Architecture — Service Map
+%% ============================================================
+
+---
+title: Patient Cost Clarity — Azure Architecture
+---
+
+flowchart TB
+    subgraph BROWSER["Browser"]
+        UI["Patient Cost Clarity UI<br/><i>Select patient, click Calculate</i>"]
+    end
+
+    subgraph AZURE_CONTAINER_APPS["Azure Container Apps Environment"]
+        direction TB
+
+        subgraph FRONTEND["Frontend Container App<br/><i>Next.js 16 — port 3000 — external ingress</i>"]
+            direction TB
+            ROUTE["API Route<br/>POST /api/optum/cost-estimate"]
+            OPTUM_AUTH["optum-auth.ts<br/><i>OAuth 2.0 client credentials</i>"]
+            OPTUM_ELIG["optum-eligibility.ts<br/><i>GraphQL CheckEligibility</i>"]
+            OPTUM_BEN["optum-benefit-check.ts<br/><i>Local benefit derivation</i>"]
+            PROXY["Backend Proxy<br/><i>POST /api/interpret</i>"]
+
+            ROUTE --> OPTUM_AUTH
+            OPTUM_AUTH --> OPTUM_ELIG
+            OPTUM_ELIG --> OPTUM_BEN
+            OPTUM_BEN --> PROXY
+        end
+
+        subgraph BACKEND["Backend Container App<br/><i>Python FastAPI — port 8000 — internal ingress</i>"]
+            direction TB
+            INTERPRET["POST /api/interpret<br/><i>Request handler</i>"]
+            AGENT["cost_agent.py<br/><i>SK Kernel orchestrator</i>"]
+            INTERPRET --> AGENT
+
+            subgraph SK_PIPELINE["Semantic Kernel Plugin Pipeline"]
+                direction TB
+                P1["1. EligibilityPlugin<br/><i>interpret_eligibility</i>"]
+                P2["2. BenefitPlugin<br/><i>structure_benefit_data</i>"]
+                P3["3. CostPlugin<br/><i>calculate_cost_estimate</i>"]
+                P4["4. ScriptPlugin<br/><i>generate_patient_script</i>"]
+                P5["5. RiskPlugin<br/><i>assess_risk_flags</i>"]
+
+                P1 --> P2
+                P2 --> P3
+                P3 --> P4
+                P4 --> P5
+            end
+
+            AGENT --> P1
+            P5 --> ASSEMBLE["Response Assembly<br/><i>ClaudeCostAnnotation JSON</i>"]
+        end
+    end
+
+    subgraph OPTUM["Optum API (External)"]
+        OPTUM_TOKEN["OAuth Token Endpoint<br/><i>idx.linkhealth.com</i>"]
+        OPTUM_GQL["GraphQL Eligibility API<br/><i>sandbox-apigw.optum.com</i>"]
+    end
+
+    subgraph AZURE_AI["Azure AI Services"]
+        subgraph AOAI["Azure OpenAI Service"]
+            GPT4O["GPT-5.4<br/><i>Chat completion — 5 calls per request</i>"]
+            EMBED["text-embedding-3-large<br/><i>3072-dim vectors for RAG queries</i>"]
+        end
+
+        subgraph SEARCH["Azure AI Search<br/><i>Basic tier</i>"]
+            INDEX["cost-interpretation-guidelines<br/><i>Hybrid: vector + BM25</i>"]
+            subgraph SEED_DOCS["Seed Documents"]
+                direction LR
+                CPT["CPT Guidelines<br/><i>7 procedure codes</i>"]
+                CALC["Cost Calc Rules<br/><i>Deductible, copay, coinsurance</i>"]
+                COV["Coverage Rules<br/><i>ACA, MHPAEA, emergency</i>"]
+            end
+            SEED_DOCS --> INDEX
+        end
+    end
+
+    subgraph AZURE_PLATFORM["Azure Platform Services"]
+        INSIGHTS["Application Insights<br/><i>Per-plugin telemetry events</i>"]
+        LOG_WS["Log Analytics Workspace<br/><i>Container logs + queries</i>"]
+        KV["Key Vault<br/><i>Optum creds, auth secrets, AI keys</i>"]
+        ACR["Container Registry<br/><i>frontend:latest, backend:latest</i>"]
+    end
+
+    %% Browser connections
+    UI -- "POST /api/optum/cost-estimate<br/>{patientId, mode}" --> ROUTE
+    ASSEMBLE -. "ClaudeCostAnnotation JSON" .-> PROXY
+    PROXY -. "Full result + timing" .-> UI
+
+    %% Frontend to Optum
+    OPTUM_AUTH -- "OAuth 2.0 token request" --> OPTUM_TOKEN
+    OPTUM_ELIG -- "GraphQL query" --> OPTUM_GQL
+
+    %% Frontend to Backend
+    PROXY -- "POST /api/interpret<br/>{patient, procedure,<br/>eligibility, benefitCheck}" --> INTERPRET
+
+    %% SK Plugins to Azure OpenAI
+    P1 -- "Chat completion" --> GPT4O
+    P2 -- "Chat completion" --> GPT4O
+    P3 -- "Chat completion<br/>(with RAG context)" --> GPT4O
+    P4 -- "Chat completion" --> GPT4O
+    P5 -- "Chat completion" --> GPT4O
+
+    %% RAG flow
+    P3 -- "Generate query embedding" --> EMBED
+    P3 -- "Hybrid search<br/>(vector + keyword)" --> INDEX
+    INDEX -. "Top 3 guideline chunks" .-> P3
+
+    %% Telemetry
+    P1 -. "sk_plugin_interpret_eligibility" .-> INSIGHTS
+    P2 -. "sk_plugin_structure_benefit_data" .-> INSIGHTS
+    P3 -. "sk_plugin_calculate_cost_estimate<br/>+ retrieved_documents" .-> INSIGHTS
+    P4 -. "sk_plugin_generate_patient_script" .-> INSIGHTS
+    P5 -. "sk_plugin_assess_risk_flags" .-> INSIGHTS
+    INSIGHTS --> LOG_WS
+
+    %% Platform connections
+    KV -. "Managed Identity" .-> FRONTEND
+    KV -. "Managed Identity" .-> BACKEND
+    ACR -. "Image pull" .-> FRONTEND
+    ACR -. "Image pull" .-> BACKEND
+
+    %% Styling
+    classDef browser fill:#e8f4f8,stroke:#2b6cb0,stroke-width:2px,color:#1a365d
+    classDef frontend fill:#ebf8ff,stroke:#3182ce,stroke-width:2px,color:#1a365d
+    classDef backend fill:#faf5ff,stroke:#805ad5,stroke-width:2px,color:#322659
+    classDef plugin fill:#e9d8fd,stroke:#6b46c1,stroke-width:1px,color:#322659
+    classDef optum fill:#fffaf0,stroke:#dd6b20,stroke-width:2px,color:#7b341e
+    classDef azureai fill:#f0fff4,stroke:#38a169,stroke-width:2px,color:#22543d
+    classDef platform fill:#fff5f5,stroke:#e53e3e,stroke-width:1px,color:#742a2a
+    classDef assembly fill:#fefcbf,stroke:#d69e2e,stroke-width:1px,color:#744210
+
+    class UI browser
+    class ROUTE,OPTUM_AUTH,OPTUM_ELIG,OPTUM_BEN,PROXY frontend
+    class INTERPRET,AGENT backend
+    class P1,P2,P3,P4,P5 plugin
+    class ASSEMBLE assembly
+    class OPTUM_TOKEN,OPTUM_GQL optum
+    class GPT4O,EMBED,INDEX,CPT,CALC,COV azureai
+    class INSIGHTS,LOG_WS,KV,ACR platform

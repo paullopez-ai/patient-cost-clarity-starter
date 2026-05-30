@@ -83,21 +83,50 @@ export async function POST(request: NextRequest) {
       sbx?.log('benefits', 'warn', 'Sandbox benefit fields may be sparse — copay/coinsurance data often empty')
     }
 
-    // Step 3: Claude annotation with timing and fallback
+    // Step 3: AI cost interpretation with timing and fallback
+    // Routes to Python Semantic Kernel backend (Azure OpenAI) when BACKEND_URL is set,
+    // otherwise falls back to the original Claude interpreter for Vercel deployments.
     let costEstimate = null
     let costEstimateMs = 0
     try {
-      sbx?.log('claude', 'info', 'Sending benefit data to Claude for cost interpretation')
-      const claudeStart = Date.now()
-      costEstimate = await interpretBenefitData(patient, procedure, eligibilityResponse, benefitCheckResponse, mode)
-      costEstimateMs = Date.now() - claudeStart
-      sbx?.log('claude', 'success', `Claude interpretation completed (${costEstimateMs}ms)`)
+      const backendUrl = process.env.BACKEND_URL
+      const forceBackend = process.env.NEXT_PUBLIC_FORCE_BACKEND === 'true'
+
+      if (backendUrl && forceBackend) {
+        sbx?.log('ai-backend', 'info', 'Sending benefit data to Azure Semantic Kernel backend for cost interpretation')
+        const backendStart = Date.now()
+        const backendResponse = await fetch(`${backendUrl}/api/interpret`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            patient,
+            procedure,
+            eligibility: eligibilityResponse,
+            benefitCheck: benefitCheckResponse,
+            mode,
+          }),
+          signal: AbortSignal.timeout(60000),
+        })
+        if (!backendResponse.ok) {
+          throw new Error(`Backend returned ${backendResponse.status}: ${backendResponse.statusText}`)
+        }
+        costEstimate = await backendResponse.json()
+        costEstimateMs = Date.now() - backendStart
+        sbx?.log('ai-backend', 'success', `Azure SK interpretation completed (${costEstimateMs}ms)`)
+      } else {
+        sbx?.log('claude', 'info', 'Sending benefit data to Claude for cost interpretation')
+        const claudeStart = Date.now()
+        costEstimate = await interpretBenefitData(patient, procedure, eligibilityResponse, benefitCheckResponse, mode)
+        costEstimateMs = Date.now() - claudeStart
+        sbx?.log('claude', 'success', `Claude interpretation completed (${costEstimateMs}ms)`)
+      }
+
       if (isSandbox) {
         sbx?.log('claude', 'warn', 'Estimate confidence is low due to sparse sandbox benefit data')
       }
     } catch (e) {
-      console.error('Claude annotation failed:', e)
-      sbx?.log('claude', 'error', `Claude annotation failed: ${e instanceof Error ? e.message : 'Unknown error'}`)
+      console.error('AI annotation failed:', e)
+      sbx?.log('claude', 'error', `AI annotation failed: ${e instanceof Error ? e.message : 'Unknown error'}`)
     }
 
     const totalMs = eligibilityMs + benefitCheckMs + costEstimateMs

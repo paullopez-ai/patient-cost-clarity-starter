@@ -1,0 +1,95 @@
+%% ============================================================
+%% DIAGRAM 4: RAG Pipeline Detail — CostPlugin
+%% ============================================================
+
+---
+title: CostPlugin RAG Pipeline — Azure AI Search + GPT-5.4
+---
+
+flowchart LR
+    subgraph INPUT["Plugin Inputs"]
+        BEN["Benefit Summary<br/><i>from BenefitPlugin</i>"]
+        PAT["Patient Context<br/><i>{firstName, insurancePlan,<br/>scenario}</i>"]
+        PROC["Procedure<br/><i>{code: 99213,<br/>description: Office visit}</i>"]
+    end
+
+    subgraph QUERY_BUILD["Query Construction"]
+        QB["Build search query:<br/><i>procedure_code +<br/>procedure_description +<br/>benefit_scenario[:200]</i>"]
+    end
+
+    subgraph EMBEDDING["Azure OpenAI Embeddings"]
+        EMB["text-embedding-3-large<br/><i>3072 dimensions</i>"]
+    end
+
+    subgraph SEARCH["Azure AI Search"]
+        direction TB
+        HYBRID["Hybrid Search<br/><i>Vector (cosine, k=3)<br/>+ BM25 keyword</i>"]
+        subgraph IDX["Index: cost-interpretation-guidelines"]
+            direction TB
+            F_ID["id (key)"]
+            F_CONTENT["content (searchable)"]
+            F_VECTOR["content_vector (3072-dim)"]
+            F_CAT["category (filterable)<br/><i>cpt_guidelines |<br/>cost_calc_rules |<br/>coverage_rules</i>"]
+            F_CODES["procedure_codes (filterable)"]
+            F_TITLE["title"]
+        end
+        HYBRID --> IDX
+    end
+
+    subgraph RESULTS["Top 3 Retrieved Chunks"]
+        direction TB
+        R1["CPT 99213 Guideline<br/><i>Allowed amount: $185.<br/>Most plans cover under<br/>flat copay ($20-$40)...</i>"]
+        R2["Copay vs Coinsurance<br/>Priority Rule<br/><i>If plan specifies flat copay,<br/>charge copay. Do not apply<br/>coinsurance in addition...</i>"]
+        R3["Deductible Application<br/>Logic<br/><i>If remaining deductible is $0,<br/>skip to coinsurance or copay...</i>"]
+    end
+
+    subgraph PROMPT["GPT-5.4 Prompt Assembly"]
+        direction TB
+        SYS["System: Healthcare cost<br/>clarity assistant"]
+        RULES["Cost Calculation Rules<br/><i>(hardcoded in prompt)</i>"]
+        RAG_CTX["Retrieved Guidelines<br/><i>(injected from AI Search)</i>"]
+        BEN_CTX["Benefit Summary<br/><i>(from Plugin 2)</i>"]
+        PAT_CTX["Patient + Procedure<br/>Context"]
+        FORMAT["Output Format:<br/><i>estimatedTotal, confidence,<br/>breakdown[], summary</i>"]
+    end
+
+    subgraph GPT["Azure OpenAI GPT-5.4"]
+        CHAT["Chat Completion<br/><i>temperature: 0<br/>max_tokens: 4096</i>"]
+    end
+
+    subgraph OUTPUT["Plugin Output"]
+        COST_JSON["{<br/>  estimatedTotal: '$25',<br/>  confidence: 'HIGH',<br/>  breakdown: [{<br/>    label: 'Office Visit Copay',<br/>    amount: '$25.00',<br/>    amountNumeric: 25<br/>  }],<br/>  plainEnglishSummary: '...',<br/>  costBreakdownExplanation: '...'<br/>}"]
+    end
+
+    subgraph TELEMETRY["Application Insights"]
+        EVENT["sk_plugin_calculate_cost_estimate<br/><i>latency_ms: 2340<br/>tokens: 1850<br/>retrieved_documents:<br/>'cpt_guidelines chunk 1,<br/>cost_calc_rules chunk 2,<br/>cost_calc_rules chunk 1'</i>"]
+    end
+
+    %% Flow
+    BEN & PAT & PROC --> QB
+    QB --> EMB
+    EMB -- "3072-dim vector" --> HYBRID
+    QB -- "search_text:<br/>procedure code" --> HYBRID
+    IDX --> R1 & R2 & R3
+    R1 & R2 & R3 --> RAG_CTX
+    BEN --> BEN_CTX
+    PAT & PROC --> PAT_CTX
+    SYS & RULES & RAG_CTX & BEN_CTX & PAT_CTX & FORMAT --> CHAT
+    CHAT --> COST_JSON
+    COST_JSON --> EVENT
+
+    %% Styling
+    classDef input fill:#ebf8ff,stroke:#3182ce,stroke-width:1px,color:#1a365d
+    classDef azure fill:#f0fff4,stroke:#38a169,stroke-width:2px,color:#22543d
+    classDef result fill:#fefcbf,stroke:#d69e2e,stroke-width:1px,color:#744210
+    classDef prompt fill:#faf5ff,stroke:#805ad5,stroke-width:1px,color:#322659
+    classDef output fill:#e9d8fd,stroke:#6b46c1,stroke-width:2px,color:#322659
+    classDef telemetry fill:#fff5f5,stroke:#e53e3e,stroke-width:1px,color:#742a2a
+
+    class BEN,PAT,PROC input
+    class EMB,HYBRID,IDX,F_ID,F_CONTENT,F_VECTOR,F_CAT,F_CODES,F_TITLE azure
+    class R1,R2,R3 result
+    class SYS,RULES,RAG_CTX,BEN_CTX,PAT_CTX,FORMAT,QB prompt
+    class CHAT azure
+    class COST_JSON output
+    class EVENT telemetry
