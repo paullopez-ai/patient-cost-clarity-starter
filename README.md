@@ -8,6 +8,8 @@ This project includes two architectures: the original Anthropic Claude integrati
 
 ## Architecture Upgrade: Before and After
 
+![Patient Cost Clarity — Azure Architecture](PCC_architecture.png)
+
 ### Before — Next.js Monolith + Anthropic Claude
 
 ```
