@@ -301,6 +301,15 @@ To see realistic cost estimates with full benefit data, use **mock mode**.
 
 ---
 
+## Getting Optum API Access
+
+This project runs fully in **mock mode** with no credentials — nothing to configure. To call the real Optum APIs (sandbox or production), register for Optum developer access:
+
+1. Sign up at the **Optum Developer Marketplace**: https://marketplace.optum.com
+2. Create an application and subscribe to the Eligibility API for **sandbox** access.
+3. Optum issues your `OPTUM_CLIENT_ID`, `OPTUM_CLIENT_SECRET`, the token/API URLs, and your provider tax ID.
+4. Copy those into `.env.local` (see `.env.local.example`) and set your own login credentials — **this repository ships none**.
+
 ## Environment Variables Reference
 
 | Variable | Required | Description |
