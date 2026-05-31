@@ -1,5 +1,8 @@
 # Patient Cost Clarity
 
+> **Live demo:** https://patient-cost-clarity-starter.vercel.app/
+> To see a live working demo, contact me.
+
 A working Next.js starter that demonstrates how to use the Optum Real Pre-Service Eligibility API (GraphQL) with AI to give patients a plain-English answer to the question every patient asks before a medical visit: "What is this actually going to cost me?"
 
 This project includes two architectures: the original Anthropic Claude integration for Vercel deployment, and an Azure-native upgrade using Azure OpenAI GPT-5.4, Semantic Kernel, Azure AI Search (RAG), and Application Insights — deployed on Azure Container Apps with Bicep IaC.
